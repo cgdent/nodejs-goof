@@ -1,44 +1,40 @@
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: goof
-spec:
-  ports:
-  - name: "3001"
-    port: 3001
-    targetPort: 3001
-    nodePort: 31001 #port exposed on localhost
-  - name: "9229"
-    port: 9229
-    targetPort: 9229
-    nodePort: 31002
-  selector:
-    app: goof
-  type: LoadBalancer
-
-
----
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: goof
+  labels:
+    app: goof
 spec:
-  replicas: 1
-  strategy: {}
+  selector: 
+    matchLabels:
+      app: goof
+  replicas: 1 
   template:
     metadata:
-      labels:
+      labels: 
         app: goof
     spec:
       containers:
-      - image: kritid04/kriti-goof
+      - image: michaelbraunbass/goof-argo
+        imagePullPolicy: Always
         name: goof
         ports:
         - containerPort: 3001
         - containerPort: 9229
-        resources: {}
-        env:
-          - name: "DOCKER"
-            value: "1"
-      restartPolicy: Always
+        securityContext:
+           allowPrivilegeEscalation: true
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: goofservice
+  labels:
+    app: goof
+spec:
+  ports:
+   - port: 3001
+     targetPort: 3001
+  selector:
+    app: goof
+  type: LoadBalancer
