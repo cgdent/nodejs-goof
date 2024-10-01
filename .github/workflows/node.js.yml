@@ -33,7 +33,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Build Docker Image
+    - name: Build and Push Docker Image
       id: buildAndPushImage
       uses: MaximilianoBz/dockerhub-buildpush@v1.0
       with:
